@@ -4,6 +4,9 @@ gitconfig-local
 # Private environment variables (location, secrets)
 private-env
 
+# Keychain function
+fish/functions/kc.fish
+
 # Backups created by the dot tool
 .backups/
 
