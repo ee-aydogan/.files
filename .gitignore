@@ -15,3 +15,6 @@ __pycache__/
 *.png
 *.jpg
 *.jpeg
+
+# docs
+docs/
