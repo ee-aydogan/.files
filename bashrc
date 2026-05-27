@@ -1,4 +1,5 @@
-# Non-interactive shell guard
+# vim: ft=bash
+
 [[ $- != *i* ]] && return
 
 # ── Env ────────────────────────────────────────────────────────

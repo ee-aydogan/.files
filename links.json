@@ -117,13 +117,13 @@
   },
   {
     "type": "file",
-    "src": ".bashrc",
+    "src": "bashrc",
     "dst": ".bashrc",
     "root": "home"
   },
   {
     "type": "file",
-    "src": ".bash_profile",
+    "src": "bash_profile",
     "dst": ".bash_profile",
     "root": "home"
   },
@@ -142,5 +142,10 @@
     "type": "dir",
     "src": "mpv",
     "dst": "mpv"
+  },
+  {
+    "type": "dir",
+    "src": "lazygit",
+    "dst": "lazygit"
   }
 ]
