@@ -5,19 +5,19 @@
       "src": "https://github.com/m00qek/baleia.nvim"
     },
     "blink.cmp": {
-      "rev": "0593548ee0b0978abf303d30f449234e07f951d1",
+      "rev": "5ee69ea52492fa038b3a1cd8de55edffe205c77d",
       "src": "https://github.com/saghen/blink.cmp"
     },
     "blink.lib": {
-      "rev": "f29d8bac6549bc1e7d699c83f680823d7def98bd",
+      "rev": "2cb62890cee636fe46722d03b7b2331e54fb3755",
       "src": "https://github.com/saghen/blink.lib"
     },
     "catppuccin": {
-      "rev": "8edd468af4d63212b84d69b2ddb5ffc9023ef5eb",
+      "rev": "0303a7208dba448c459767486a38a6ec05c4216b",
       "src": "https://github.com/catppuccin/nvim"
     },
     "codediff.nvim": {
-      "rev": "76ff1b13f0bcba655dca85cea1ef0df877a53c0f",
+      "rev": "29b06f37251f2e010f53a0892573b2ec03d165e2",
       "src": "https://github.com/esmuellert/codediff.nvim"
     },
     "conform.nvim": {
@@ -58,7 +58,7 @@
       "src": "https://github.com/NeogitOrg/neogit"
     },
     "nvim-lspconfig": {
-      "rev": "a4ed4e761c400849e8c9f8bda33e5083f890268c",
+      "rev": "9573948c38bfabeec353ae7dd7d3ffec4c506a6b",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-spectre": {
@@ -78,7 +78,7 @@
       "src": "https://github.com/MeanderingProgrammer/render-markdown.nvim"
     },
     "smart-splits.nvim": {
-      "rev": "b24335c3186b6c35522fa108af63646a2f70b3b6",
+      "rev": "1865e6826b1cd90098f198acb0f5b744a7b40c22",
       "src": "https://github.com/mrjones2014/smart-splits.nvim"
     },
     "snacks.nvim": {
@@ -86,7 +86,7 @@
       "src": "https://github.com/folke/snacks.nvim"
     },
     "tree-sitter-manager.nvim": {
-      "rev": "8c8b9c5a154e33c565baa2f4562eb50056df8f5b",
+      "rev": "bb66b815aff01e87b2e26be995116be8d2f91474",
       "src": "https://github.com/romus204/tree-sitter-manager.nvim"
     },
     "trouble.nvim": {
