@@ -1,7 +1,9 @@
-# Arch Linux Install Guide
+# Arch Linux Install Guide — Laptop
 
-> Custom install steps for my personal setup.
+> Custom install steps for my personal laptop setup.
 > Review each section and decide what to keep/change.
+> Disk: `/dev/nvme0n1` — single NVMe, no HDD.
+> Kernel tag: `kernel-7.0.11-laptop` (pre-built on laptop with `-march=native`).
 
 ---
 
@@ -20,10 +22,10 @@
 - [10. Hostname](#10-hostname)
 - [11. Users & Sudo](#11-users--sudo)
 - [12. Install Custom Kernel](#12-install-custom-kernel)
-- [13. systemd-networkd](#13-systemd-networkd)
+- [13. NetworkManager](#13-networkmanager)
 - [14. UKI Boot (mkinitcpio)](#14-uki-boot-mkinitcpio)
 - [15. CPU & Kernel Tuning](#15-cpu--kernel-tuning)
-- [16. AMD GPU](#16-amd-gpu)
+- [16. Intel GPU (Xe / Iris Xe)](#16-intel-gpu-xe--iris-xe)
 - [17. adios (NVMe Scheduler)](#17-adios-nvme-scheduler)
 - [18. Theming](#18-theming)
 - [19. Exit & Reboot](#19-exit--reboot)
@@ -151,15 +153,15 @@ sudo ./cachyos-repo.sh
 pacstrap -K /mnt \
   base base-devel \
   linux-firmware \
-  amd-ucode \
+  intel-ucode \
   git neovim \
   man-db man-pages \
   efibootmgr \
-  systemd-networkd
+  networkmanager
 ```
 
 > No `linux linux-headers` — we install the pre-built CachyOS kernel from GitHub release.
-> No systemd-resolved (DHCP handles DNS).
+> No systemd-resolved (DHCP handles DNS via NetworkManager).
 > No systemd-ukify (using mkinitcpio for UKI).
 
 ---
@@ -194,13 +196,13 @@ tmpfs  /tmp  tmpfs  rw,nosuid,nodev,noatime,size=16G,mode=1777  0 0
 ```bash
 mkdir -p /mnt/root/kernel-build
 
-curl -L https://github.com/eydgn/.files/releases/download/kernel-7.0.11/linux-cachyos-bore-lto-7.0.11-1-x86_64.pkg.tar.zst \
+curl -L https://github.com/eydgn/.files/releases/download/kernel-7.0.11-laptop/linux-cachyos-bore-lto-7.0.11-1-x86_64.pkg.tar.zst \
   -o /mnt/root/kernel-build/linux-cachyos-bore-lto-7.0.11-1-x86_64.pkg.tar.zst
 
-curl -L https://github.com/eydgn/.files/releases/download/kernel-7.0.11/linux-cachyos-bore-lto-headers-7.0.11-1-x86_64.pkg.tar.zst \
+curl -L https://github.com/eydgn/.files/releases/download/kernel-7.0.11-laptop/linux-cachyos-bore-lto-headers-7.0.11-1-x86_64.pkg.tar.zst \
   -o /mnt/root/kernel-build/linux-cachyos-bore-lto-headers-7.0.11-1-x86_64.pkg.tar.zst
 
-curl -L https://github.com/eydgn/.files/releases/download/kernel-7.0.11/linux-cachyos-bore-lto-r8125-7.0.11-1-x86_64.pkg.tar.zst \
+curl -L https://github.com/eydgn/.files/releases/download/kernel-7.0.11-laptop/linux-cachyos-bore-lto-r8125-7.0.11-1-x86_64.pkg.tar.zst \
   -o /mnt/root/kernel-build/linux-cachyos-bore-lto-r8125-7.0.11-1-x86_64.pkg.tar.zst
 ```
 
@@ -277,43 +279,34 @@ pacman -U linux-cachyos-bore-lto-*.pkg.tar.zst \
 
 ---
 
-## 13. systemd-networkd
+## 13. NetworkManager
 
 ```bash
-systemctl enable systemd-networkd
+systemctl enable NetworkManager
 ```
 
-### Wired interface (`/etc/systemd/network/20-wired.network`)
-
-```ini
-[Match]
-Name=enp*
-
-[Network]
-DHCP=yes
-```
-
-> No DNS config — DHCP handles it automatically.
+> DHCP and DNS are handled automatically by NetworkManager.
+> No manual interface config needed.
 
 ---
 
 ## 14. UKI Boot (mkinitcpio)
 
-### Kernel cmdline (AMD)
+### Kernel cmdline (Intel)
 
 ```bash
 mkdir -p /etc/kernel
 
-echo "root=UUID=$(blkid -s UUID -o value /dev/nvme0n1p2) rw quiet loglevel=3 nowatchdog amd_pstate=active amdgpu.ppfeaturemask=0xffffffff mitigations=off threadirqs" > /etc/kernel/cmdline
+echo "root=UUID=$(blkid -s UUID -o value /dev/nvme0n1p2) rw quiet loglevel=3 nowatchdog mitigations=off threadirqs" > /etc/kernel/cmdline
 ```
 
-> `amd_pstate=active` — enables AMD frequency scaling driver.
-> `amdgpu.ppfeaturemask=0xffffffff` — unlocks all AMD GPU power/clock features.
+> Add `intel_iommu=on` if you use VMs or Thunderbolt.
+> Add `i915.enable_psr=0` if you see screen flicker.
 
 ### mkinitcpio hooks (`/etc/mkinitcpio.conf`)
 
 ```
-MODULES=(amdgpu)
+MODULES=(i915)
 HOOKS=(base systemd autodetect microcode modconf kms keyboard sd-vconsole block filesystems fsck)
 ```
 
@@ -351,7 +344,7 @@ Type = Path
 Operation = Install
 Operation = Upgrade
 Target = usr/lib/modules/*/vmlinuz
-Target = boot/amd-ucode.img
+Target = boot/intel-ucode.img
 
 [Action]
 Description = Rebuilding UKI...
@@ -406,11 +399,13 @@ nvim /etc/makepkg.conf
 
 ---
 
-## 16. AMD GPU
+## 16. Intel GPU (Xe / Iris Xe)
 
 ```bash
-pacman -S mesa vulkan-radeon vulkan-mesa-layers mesa-utils rocm-smi-lib
+pacman -S mesa vulkan-intel mesa-utils intel-media-driver
 ```
+
+> `intel-media-driver` — hardware video encoding/decoding for Intel GPUs.
 
 ---
 
@@ -422,14 +417,6 @@ nvim /etc/udev/rules.d/60-ioschedulers.rules
 ```
 
 ```
-# HDD
-ACTION=="add|change", KERNEL=="sd[a-z]*", ATTR{queue/rotational}=="1", \
-    ATTR{queue/scheduler}="bfq"
-
-# SSD
-ACTION=="add|change", KERNEL=="sd[a-z]*|mmcblk[0-9]*", ATTR{queue/rotational}=="0", \
-    ATTR{queue/scheduler}="adios"
-
 # NVMe SSD
 ACTION=="add|change", KERNEL=="nvme[0-9]*", ATTR{queue/rotational}=="0", \
     ATTR{queue/scheduler}="adios"
@@ -641,16 +628,16 @@ Config ideas:
 | ---- | -------------------------------------------------------------- | ------ |
 | 0-3  | Boot, disks, fs, mount                                         | Keep   |
 | 4    | Mirrors + CachyOS                                              | Keep   |
-| 5    | Base install (no linux, no build deps)                         | Keep   |
+| 5    | Base install (intel-ucode, networkmanager)                     | Keep   |
 | 6    | fstab (genfstab + manual edits)                                | Keep   |
-| 7    | Download pre-built kernel from GitHub release                  | Keep   |
+| 7    | Download pre-built kernel (tag: kernel-7.0.11-laptop)          | Keep   |
 | 8-11 | Chroot, tz, hostname, users                                    | Keep   |
 | 12   | Install kernel (pacman -U, no build)                           | Keep   |
-| 13   | systemd-networkd only (no DNS)                                 | Keep   |
-| 14   | UKI boot                                                       | Keep   |
+| 13   | NetworkManager (instead of systemd-networkd)                   | Keep   |
+| 14   | UKI boot (Intel cmdline, i915 module, intel-ucode)             | Keep   |
 | 15   | CPU/kernel tuning                                              | Keep   |
-| 16   | AMD GPU                                                        | Keep   |
-| 17   | adios scheduler                                                | Keep   |
+| 16   | Intel GPU (vulkan-intel, intel-media-driver)                   | Keep   |
+| 17   | adios (NVMe only, no HDD/SSD rules)                            | Keep   |
 | 18   | Qt/GTK Theming                                                 | Keep   |
 | 19   | Exit & reboot                                                  | Keep   |
 | 20   | Post-boot (paru, dotfiles, gpg/ssh/gopass, packages, services) | Keep   |

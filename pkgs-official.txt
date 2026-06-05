@@ -91,6 +91,7 @@ wget
 wl-clipboard
 words
 xdg-desktop-portal-wlr
+yazi
 yt-dlp
 zathura-pdf-mupdf
 zoxide

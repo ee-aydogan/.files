@@ -1,11 +1,9 @@
-# AUR packages (linux-cachyos-bore* excluded — built from PKGBUILD)
+#update  AUR packages (linux-cachyos-bore* excluded — built from PKGBUILD)
 # Generated: 2026-06-05
 # Usage: paru -S --needed - < pkgs-aur.txt
 
 fish-lsp
 go-pray-bin
-gtk-engine-murrine
 paru-git
 surge
 wttrbar-bin
-yazi-git
