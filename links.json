@@ -144,14 +144,21 @@
     "dst": "mpv"
   },
   {
-    "type": "dir",
-    "src": "lazygit",
-    "dst": "lazygit"
+    "type": "file",
+    "src": "modprobed.db",
+    "dst": "modprobed.db"
   },
   {
     "type": "dir",
-    "src": "ghostty",
-    "dst": "ghostty"
+    "src": "themes",
+    "dst": ".themes",
+    "root": "home"
+  },
+  {
+    "type": "file",
+    "src": "npmrc",
+    "dst": ".npmrc",
+    "root": "home"
   },
   {
     "type": "dir",
