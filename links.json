@@ -145,7 +145,7 @@
   },
   {
     "type": "file",
-    "src": "modprobed.db",
+    "src": "kernel/modprobed.db",
     "dst": "modprobed.db"
   },
   {
