@@ -6,12 +6,14 @@
     - [ ] useful functions and scripts
 - [-] neovim:
     - [ ] try to drop lspconfig
-    - [ ] improve blink.cmp
+    - [ ] improve blink.cmp:
+        - [ ] keybinds
+        - [ ] sources
+    - [ ] improve/learn keybinds, resolve conflits
     - [ ] improved treesitter functionality
     - [ ] better/faster pairs ? blink ?
     - [X] neogit
     - [ ] explore snacks.nvim
-    - [ ] try to unify bars
 - [ ] find an extension to use firefox with only keybeard and learn it
 - [ ] qmk:
     - [ ] install your config

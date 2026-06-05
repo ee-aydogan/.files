@@ -4,6 +4,7 @@ if status is-interactive
     fish_add_path ~/.cargo/bin
     fish_add_path ~/.local/share/nvim/mason/bin
     fish_add_path ~/go/bin
+    fish_add_path ~~/.npm-global
 
     set -g fish_history_size 10000
     set -gx EDITOR nvim
@@ -77,5 +78,4 @@ if status is-interactive
     set -g async_prompt_functions _pure_prompt_git
     source ~/.config/fish/keybinds.fish
 
-    kc
 end
